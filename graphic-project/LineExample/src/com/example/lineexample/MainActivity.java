@@ -3,55 +3,55 @@
 package com.example.lineexample;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 public class MainActivity extends Activity {
 
-	LinearLayout layout;
-	
-	
-	Canvas page;
-	
-	/**Clasa Paint specifica modul in care este desenat obiectul: grosime, culoare, etc.
-	 * Este un parametru al functiilor draw ale obiectelor de tip Canvas*/
-	Paint style;
-	
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		layout = (LinearLayout)findViewById(R.id.screen);
-		
-		style = new Paint();
-		style.setColor(Color.BLUE);
-		style.setStrokeWidth(20);
-		
-		Bitmap bm = Bitmap.createBitmap(480, 800, Config.ARGB_8888);
-		page = new Canvas(bm);
-		
-		page.drawRGB(255,  255,  255); //deseneaza fundalul
-		page.drawLine(100, 100, 200, 200, style);
-		
-		//functia asta are nevoie de android API 16, adica Android 4.1.2
-		layout.setBackground(new BitmapDrawable(getResources(), bm));
-		
-		
-	}
+    LinearLayout layout;
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+    Canvas page;
+
+    /**
+     * Clasa Paint specifica modul in care este desenat obiectul: grosime,
+     * culoare, etc. Este un parametru al functiilor draw ale obiectelor de tip
+     * Canvas
+     */
+    Paint style;
+    ChartPainter p;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	requestWindowFeature(Window.FEATURE_NO_TITLE);
+	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	p = new ChartPainter(this);
+	setContentView(p);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+	// Inflate the menu; this adds items to the action bar if it is present.
+	getMenuInflater().inflate(R.menu.main, menu);
+	return true;
+    }
+
+    @Override
+    protected void onResume() {
+	super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+	super.onPause();
+	p.pause();
+    }
 
 }
