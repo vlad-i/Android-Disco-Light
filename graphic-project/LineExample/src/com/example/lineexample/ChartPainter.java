@@ -22,7 +22,7 @@ public class ChartPainter extends SurfaceView implements Runnable {
     private Canvas canvas = null;
 
     /** Bool for running state */
-    private boolean isRunning = false;
+    private boolean isRunning = true;
 
     public ChartPainter(Context context) {
 	super(context);
@@ -31,7 +31,6 @@ public class ChartPainter extends SurfaceView implements Runnable {
 
 	    @Override
 	    public void surfaceCreated(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
 		Thread t = new Thread(ChartPainter.this);
 		t.start();
 		// ChartPainter.this.drawChart();
@@ -49,9 +48,7 @@ public class ChartPainter extends SurfaceView implements Runnable {
 		// TODO Auto-generated method stub
 
 	    }
-
 	});
-
     }
 
     private void drawSomeShit() {
@@ -64,8 +61,7 @@ public class ChartPainter extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
-	isRunning = true;
-	while (isRunning) {
+	do {
 	    if (holder.getSurface().isValid()) {
 		canvas = holder.lockCanvas();
 		/** Draw background */
@@ -81,7 +77,6 @@ public class ChartPainter extends SurfaceView implements Runnable {
 	    try {
 		Thread.sleep(5000);
 	    } catch (InterruptedException e) {
-		// TODO Auto-generated catch block
 		Log.e("ChartPainter", e.getMessage());
 	    }
 	    if (holder.getSurface().isValid()) {
@@ -96,26 +91,23 @@ public class ChartPainter extends SurfaceView implements Runnable {
 		/** Print to screen */
 		holder.unlockCanvasAndPost(canvas);
 	    }
-	}
-
+	} while (isRunning);
     }
 
     private void drawChart() {
 
 	float startX = (float) (100 * Math.random());
 	float startY = (float) (100 * Math.random());
-	;
+	
 	float stopY = (float) (100 * Math.random());
-	;
+	
 	Paint linePaint = new Paint();
 	linePaint.setColor(Color.BLUE);
 	linePaint.setStrokeWidth(20);
-	;
+	
 	float stopX = (float) (100 * Math.random());
-	;
-	// TODO Auto-generated method stub
+	
 	canvas.drawLine(startX, startY, stopX, stopY, linePaint);
-
     }
 
     /** Will be called from GraphDrawer when onPause() will occur */
@@ -125,7 +117,6 @@ public class ChartPainter extends SurfaceView implements Runnable {
 	try {
 	    drawThread.join();
 	} catch (InterruptedException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 	drawThread = null;
@@ -135,7 +126,6 @@ public class ChartPainter extends SurfaceView implements Runnable {
 	drawThread = new Thread(this);
 	isRunning = true;
 	drawThread.start();
-
     }
 
 }
