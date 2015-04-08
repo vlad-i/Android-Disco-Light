@@ -11,8 +11,7 @@ public class Read implements Runnable {
 
     @Override
     public void run() {
-	Scanner stream;
-	stream = new Scanner(System.in);
+	Scanner stream = new Scanner(System.in);
 	while (stream.hasNext()) {
 	    try {
 		shared.setElem(Double.parseDouble(stream.next()));
