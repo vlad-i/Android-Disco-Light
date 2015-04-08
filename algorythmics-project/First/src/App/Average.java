@@ -10,7 +10,7 @@ class Average implements Runnable {
     }
 
     private double calc_average() {
-	int sum = 0;
+	double sum = 0;
 	for (int i = 0; i < shared.list.size(); i++) {
 	    sum += shared.list.get(i);
 	}
