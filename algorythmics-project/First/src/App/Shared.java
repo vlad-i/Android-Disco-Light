@@ -27,7 +27,6 @@ public class Shared {
     }
 
     public boolean wasChanged() {
-	// TODO Auto-generated method stub
 	return changed;
     }
 }
