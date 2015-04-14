@@ -97,8 +97,8 @@ public class ChartPainter extends SurfaceView implements Runnable {
 	float startX = (float) (100 * Math.random());
 	float startY = (float) (100 * Math.random());
 	
-	float stopY = (float) (100 * Math.random());
 	float stopX = (float) (100 * Math.random());
+	float stopY = (float) (100 * Math.random());
 	
 	Paint linePaint = new Paint();
 	linePaint.setColor(Color.BLUE);
