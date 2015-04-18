@@ -2,7 +2,7 @@ package App;
 
 class Average implements Runnable {
     private Shared shared;
-    public double sum = 0;
+    public double sum;
     private Double current_element;
 
     Average(Shared elements) {
@@ -18,15 +18,14 @@ class Average implements Runnable {
     }
 
     private boolean light() {
-	if (current_element > calc_average()) // if current element is bigger
-					      // than average
+	if (current_element > calc_average()) 
 	    return true;
 	return false;
     }
 
     @Override
     public void run() {
-	do {
+	while (shared.shouldContinue()) {
 	    try {
 		Thread.sleep(100);
 
@@ -39,6 +38,6 @@ class Average implements Runnable {
 	    } catch (InterruptedException ex) {
 		// asdada
 	    }
-	} while (shared.shouldContinue());
+	}
     }
 }
