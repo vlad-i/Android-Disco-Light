@@ -12,8 +12,7 @@ This program will resolve this issue and therefore provide more awesomeness for 
   - The app can work with a network of phones.
   
 **Dependencies:**
-  - Android
   - Java 1.8 (It may work on older versions too.)
-  - At least one phone with a working microphone
+  - At least one phone with a working microphone and with Android
 
 **License:** Not chosen yet. For now, you can use the software for free, but without distribuiting it or a modification of it.
