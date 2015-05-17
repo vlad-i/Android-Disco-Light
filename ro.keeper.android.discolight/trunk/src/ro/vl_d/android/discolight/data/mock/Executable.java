@@ -1,4 +1,4 @@
-package ro.vl_d.android.discolight.data;
+package ro.vl_d.android.discolight.data.mock;
 
 /**
  * Interface to be used for callbacks when new data is present in the data

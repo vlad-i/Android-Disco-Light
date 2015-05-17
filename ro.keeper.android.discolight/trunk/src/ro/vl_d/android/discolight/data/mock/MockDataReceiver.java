@@ -1,6 +1,6 @@
-package ro.vl_d.android.discolight.data;
+package ro.vl_d.android.discolight.data.mock;
 
-import android.util.Log;
+import android.os.AsyncTask;
 
 /**
  * This class is responsible for starting the data receiving Thread, and
@@ -9,7 +9,7 @@ import android.util.Log;
  * @author Vlad
  *
  */
-public class DataReceiver {
+public class MockDataReceiver {
     /**
      * There can be only one Executable present for the DataReceiver.
      * 
@@ -20,7 +20,7 @@ public class DataReceiver {
     private Executable executable;
     private boolean canRun;
 
-    public DataReceiver(Executable executable) {
+    public MockDataReceiver(Executable executable) {
 	this.executable = executable;
 	canRun = false;
     }
@@ -31,12 +31,24 @@ public class DataReceiver {
      */
     public void startReceiving() {
 	canRun = true;
-	Thread t = new Thread(new Runnable() {
+	// Thread t = new Thread(new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	//
+	// }
+	//
+	// });
+	// t.start();
+
+	AsyncTask<Object, Object, Object> task = new AsyncTask<Object, Object, Object>() {
 
 	    @Override
-	    public void run() {
+	    protected Object doInBackground(Object... params) {
+		// TODO Auto-generated method stub
 		while (canRun) {
 		    int value = getCurrentValue();
+		    System.out.println("Executing the value:" + value);
 		    executable.execute(value);
 		    try {
 			Thread.sleep(100);
@@ -44,14 +56,13 @@ public class DataReceiver {
 			e.printStackTrace();
 			// we interrupt the loop
 			canRun = false;
-			Log.e("DiscoLight InterruptedException",
-				"The thread was interrupted");
 		    }
 		}
+		return null;
 	    }
 
-	});
-	t.start();
+	};
+	task.execute(new Object[0]);
     }
 
     /**
