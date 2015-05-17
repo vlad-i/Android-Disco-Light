@@ -1,6 +1,11 @@
 package ro.vl_d.android.discolight.data.mock;
 
+import java.io.IOException;
+
+import ro.vl_d.android.discolight.WelcomeScreenActivity;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * This class is responsible for starting the data receiving Thread, and
@@ -19,10 +24,26 @@ public class MockDataReceiver {
      */
     private Executable executable;
     private boolean canRun;
+    private MediaRecorder recorder = null;
 
     public MockDataReceiver(Executable executable) {
 	this.executable = executable;
 	canRun = false;
+	recorder = new MediaRecorder();
+	recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+	recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+	recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+	recorder.setOutputFile("/dev/null");
+	try {
+	    recorder.prepare();
+	} catch (IllegalStateException e) {
+
+	    Log.e(WelcomeScreenActivity.APP_ID, e.getMessage());
+
+	} catch (IOException e) {
+
+	    Log.e(WelcomeScreenActivity.APP_ID, e.getMessage());
+	}
     }
 
     /**
@@ -31,27 +52,19 @@ public class MockDataReceiver {
      */
     public void startReceiving() {
 	canRun = true;
-	// Thread t = new Thread(new Runnable() {
-	//
-	// @Override
-	// public void run() {
-	//
-	// }
-	//
-	// });
-	// t.start();
 
 	AsyncTask<Object, Object, Object> task = new AsyncTask<Object, Object, Object>() {
 
 	    @Override
 	    protected Object doInBackground(Object... params) {
 		// TODO Auto-generated method stub
+		recorder.start();
 		while (canRun) {
 		    int value = getCurrentValue();
 		    System.out.println("Executing the value:" + value);
 		    executable.execute(value);
 		    try {
-			Thread.sleep(100);
+			Thread.sleep(50);
 		    } catch (InterruptedException e) {
 			e.printStackTrace();
 			// we interrupt the loop
@@ -69,6 +82,11 @@ public class MockDataReceiver {
      * brings the data population thread to a halt
      */
     public void stopReceiving() {
+	if (recorder != null) {
+	    recorder.stop();
+	    recorder.release();
+	    recorder = null;
+	}
 	canRun = false;
     }
 
@@ -78,7 +96,17 @@ public class MockDataReceiver {
      * @return
      */
     private int getCurrentValue() {
+	double amplitude = getAmplitude();
+	Log.i(WelcomeScreenActivity.APP_ID, "Amplitude: " + amplitude);
+	return (int) amplitude;
+    }
 
-	return (int) (Math.random() * 100.0);
+    private double getAmplitude() {
+	if (recorder != null) {
+	    return recorder.getMaxAmplitude();
+	} else {
+	    // TODO find a better default value
+	    return 1;
+	}
     }
 }

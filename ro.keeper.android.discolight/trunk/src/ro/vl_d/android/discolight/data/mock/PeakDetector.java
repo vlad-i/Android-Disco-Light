@@ -52,6 +52,8 @@ public class PeakDetector implements Executable {
 	for (int i = 0; i < WEIGHT_ARRAY_SIZE; i++) {
 	    // we're assuming there is no zero
 	    if (ringBuffer.getBufferItem(i) != 0) {
+		// TODO find a better way to take only valid data, instead of
+		// also a bunch of zeroes
 		sum += weights[i] * ringBuffer.getBufferItem(i);
 		weightTotal += weights[i];
 	    }

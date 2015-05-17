@@ -8,6 +8,9 @@ public class CircularBuffer {
     public CircularBuffer(int size) {
 	bufferSize = size;
 	circularBuffer = new int[size];
+	for (int i = 0; i < circularBuffer.length; i++) {
+	    circularBuffer[i] = 50;
+	}
     }
 
     public int getBufferItem(int index) {
