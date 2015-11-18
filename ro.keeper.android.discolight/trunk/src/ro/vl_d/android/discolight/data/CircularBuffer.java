@@ -1,4 +1,4 @@
-package ro.vl_d.android.discolight.data.mock;
+package ro.vl_d.android.discolight.data;
 
 public class CircularBuffer {
     private final int[] circularBuffer;

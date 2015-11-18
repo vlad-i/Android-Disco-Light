@@ -1,4 +1,4 @@
-package ro.vl_d.android.discolight.data.mock;
+package ro.vl_d.android.discolight.data;
 
 import ro.vl_d.android.discolight.WelcomeScreenActivity;
 import android.hardware.Camera;

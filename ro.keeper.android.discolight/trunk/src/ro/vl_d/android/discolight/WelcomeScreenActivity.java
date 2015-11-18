@@ -1,9 +1,9 @@
 package ro.vl_d.android.discolight;
 
-import ro.vl_d.android.discolight.data.mock.Executable;
-import ro.vl_d.android.discolight.data.mock.MobileLight;
-import ro.vl_d.android.discolight.data.mock.MockDataReceiver;
-import ro.vl_d.android.discolight.data.mock.PeakDetector;
+import ro.vl_d.android.discolight.data.DataReceiver;
+import ro.vl_d.android.discolight.data.Executable;
+import ro.vl_d.android.discolight.data.MobileLight;
+import ro.vl_d.android.discolight.data.PeakDetector;
 import ro.vl_d.android.discolight.drawing.ChartPainter;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -32,7 +32,7 @@ public class WelcomeScreenActivity extends ActionBarActivity {
     private boolean flashIsOn = false;
 
     private Camera cam;
-    private MockDataReceiver receiver;
+    private DataReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class WelcomeScreenActivity extends ActionBarActivity {
 	    cam = Camera.open();
 	    MobileLight light = new MobileLight(cam);
 	    Executable detector = new PeakDetector(light);
-	    receiver = new MockDataReceiver(detector);
+	    receiver = new DataReceiver(detector);
 	    receiver.startReceiving();
 	}
     }

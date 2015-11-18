@@ -1,4 +1,4 @@
-package ro.vl_d.android.discolight.data.mock;
+package ro.vl_d.android.discolight.data;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import android.util.Log;
  * @author Vlad
  *
  */
-public class MockDataReceiver {
+public class DataReceiver {
     /**
      * There can be only one Executable present for the DataReceiver.
      * 
@@ -26,7 +26,7 @@ public class MockDataReceiver {
     private boolean canRun;
     private MediaRecorder recorder = null;
 
-    public MockDataReceiver(Executable executable) {
+    public DataReceiver(Executable executable) {
 	this.executable = executable;
 	canRun = false;
 	recorder = new MediaRecorder();
