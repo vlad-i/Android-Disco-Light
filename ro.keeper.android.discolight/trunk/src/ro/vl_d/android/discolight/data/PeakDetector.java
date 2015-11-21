@@ -15,9 +15,8 @@ public class PeakDetector implements Executable {
 
     @Override
     public void execute(int value) {
-	// TODO Auto-generated method stub
 	ringBuffer.add(value);
-	this.turnOnLED(value);
+	this.switchLED(value);
     }
 
     private void populateWeights() {
@@ -34,7 +33,7 @@ public class PeakDetector implements Executable {
 	return index;
     }
 
-    private boolean turnOnLED(int currentValue) {
+    private boolean switchLED(int currentValue) {
 	int average = computeAverage();
 	if (average < currentValue) {
 	    switchable.toggle(true);

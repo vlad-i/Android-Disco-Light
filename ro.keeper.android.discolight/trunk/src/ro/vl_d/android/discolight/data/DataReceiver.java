@@ -57,18 +57,25 @@ public class DataReceiver {
 
 	    @Override
 	    protected Object doInBackground(Object... params) {
-		// TODO Auto-generated method stub
 		recorder.start();
 		while (canRun) {
-		    int value = getCurrentValue();
-		    System.out.println("Executing the value:" + value);
-		    executable.execute(value);
 		    try {
-			Thread.sleep(50);
-		    } catch (InterruptedException e) {
-			e.printStackTrace();
-			// we interrupt the loop
-			canRun = false;
+			int value = getCurrentValue();
+			System.out.println("Executing the value:" + value);
+			executable.execute(value);
+			try {
+			    Thread.sleep(50);
+			} catch (InterruptedException e) {
+			    e.printStackTrace();
+			    // we interrupt the loop
+			    canRun = false;
+			}
+		    } catch (RuntimeException ex) {
+			// FIXME terrible terrible terrible workaround for a
+			// buggy
+			// RuntimeException onPause
+			Log.e(WelcomeScreenActivity.APP_ID,
+				"doInBackground RTE: " + ex.getMessage());
 		    }
 		}
 		return null;
