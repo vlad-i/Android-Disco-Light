@@ -1,51 +1,29 @@
 package ro.vl_d.android.discolight;
 
-import ro.vl_d.android.discolight.data.DataReceiver;
-import ro.vl_d.android.discolight.data.Executable;
-import ro.vl_d.android.discolight.data.MobileLight;
-import ro.vl_d.android.discolight.data.PeakDetector;
-import ro.vl_d.android.discolight.drawing.ChartPainter;
-import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.hardware.Camera;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 
 public class WelcomeScreenActivity extends ActionBarActivity {
 
+    private final int DRAWER_NOTIFICATION_ID = 1337;
     LinearLayout layout;
+    ToggleButton toggleButton;
 
     public static final String APP_ID = "ro.vl_d.android.discolight";
-    Canvas page;
-
-    /**
-     * Clasa Paint specifica modul in care este desenat obiectul: grosime,
-     * culoare, etc. Este un parametru al functiilor draw ale obiectelor de tip
-     * Canvas
-     */
-    Paint style;
-    ChartPainter p;
-
-    private boolean flashIsOn = false;
-
-    private Camera cam;
-    private DataReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-
-	/**
-	 * this is the old code for the painting of the chart
-	 * 
-	 * requestWindowFeature(Window.FEATURE_NO_TITLE);
-	 * getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-	 * WindowManager.LayoutParams.FLAG_FULLSCREEN); p = new
-	 * ChartPainter(this); setContentView(p);
-	 */
+	setContentView(R.layout.activity_welcome_screen);
     }
 
     @Override
@@ -58,25 +36,113 @@ public class WelcomeScreenActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
 	super.onResume();
-	if (this.getPackageManager().hasSystemFeature(
-		PackageManager.FEATURE_CAMERA_FLASH)) {
-	    cam = Camera.open();
-	    MobileLight light = new MobileLight(cam);
-	    Executable detector = new PeakDetector(light);
-	    receiver = new DataReceiver(detector);
-	    receiver.startReceiving();
-	}
+	toggleButton = (ToggleButton) this.findViewById(R.id.toggling_button);
+	toggleButton.setChecked(MicLightService.isStarted());
+	toggleButton
+		.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		    Intent serviceIntent = new Intent(
+			    WelcomeScreenActivity.this, MicLightService.class);
+
+		    public void onCheckedChanged(CompoundButton buttonView,
+			    boolean isChecked) {
+
+			if (isChecked) {
+			    WelcomeScreenActivity.this
+				    .startService(serviceIntent);
+			    AsyncTask<Object, Object, Object> task = new AsyncTask<Object, Object, Object>() {
+
+				@Override
+				protected void onPreExecute() {
+				    toggleButton.setEnabled(false);
+				}
+
+				@Override
+				protected Object doInBackground(
+					Object... params) {
+				    while (!MicLightService.isStarted()) {
+					try {
+					    Thread.sleep(50);
+					} catch (InterruptedException e) {
+					    // TODO Auto-generated catch block
+					    e.printStackTrace();
+					}
+				    }
+				    return null;
+				}
+
+				@Override
+				protected void onPostExecute(Object result) {
+				    toggleButton.setEnabled(true);
+				}
+			    };
+			    task.execute();
+
+			} else {
+			    WelcomeScreenActivity.this
+				    .stopService(serviceIntent);
+
+			    AsyncTask<Object, Object, Object> task = new AsyncTask<Object, Object, Object>() {
+
+				@Override
+				protected void onPreExecute() {
+				    toggleButton.setEnabled(false);
+				}
+
+				@Override
+				protected Object doInBackground(
+					Object... params) {
+				    while (MicLightService.isStarted()) {
+					try {
+					    Thread.sleep(50);
+					} catch (InterruptedException e) {
+					    // TODO Auto-generated catch block
+					    e.printStackTrace();
+					}
+				    }
+				    return null;
+				}
+
+				@Override
+				protected void onPostExecute(Object result) {
+				    toggleButton.setEnabled(true);
+				}
+			    };
+			    task.execute();
+
+			}
+
+		    }
+		});
+
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
 	super.onPause();
-	if (this.getPackageManager().hasSystemFeature(
-		PackageManager.FEATURE_CAMERA_FLASH)) {
-	    receiver.stopReceiving();
-	    cam.release();
-	}
-	// p.pause();
-    }
+	if (MicLightService.isStarted()) {
+	    NotificationCompat.Builder builder = new NotificationCompat.Builder(
+		    this).setSmallIcon(R.drawable.ic_launcher)
+		    .setContentTitle("MicLight")
+		    .setContentText("MicLight still working...")
+		    .setAutoCancel(true);
 
+	    // poc
+
+	    // Gets an instance of the NotificationManager service
+	    NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+	    Intent resultIntent = new Intent(this, WelcomeScreenActivity.class);
+
+	    // Because clicking the notification opens a new ("special")
+	    // activity,
+	    // there's
+	    // no need to create an artificial back stack.
+	    PendingIntent resultPendingIntent = PendingIntent.getActivity(this,
+		    0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+	    builder.setContentIntent(resultPendingIntent);
+	    // Builds the notification and issues it.
+	    mNotifyMgr.notify(DRAWER_NOTIFICATION_ID, builder.build());
+	    // / poc
+	}
+    }
 }

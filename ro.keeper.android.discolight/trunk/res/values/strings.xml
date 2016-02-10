@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">Android Disco Light</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Mic Light On</string>
+    <string name="bye_world">Mic Light Off</string>
     <string name="action_settings">Settings</string>
 
 </resources>

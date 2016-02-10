@@ -4,12 +4,13 @@ public class CircularBuffer {
     private final int[] circularBuffer;
     private int circularBufferIndex = 0;
     private final int bufferSize;
+    public static int FIDDY = 50;
 
     public CircularBuffer(int size) {
 	bufferSize = size;
 	circularBuffer = new int[size];
 	for (int i = 0; i < circularBuffer.length; i++) {
-	    circularBuffer[i] = 50;
+	    circularBuffer[i] = FIDDY;
 	}
     }
 
